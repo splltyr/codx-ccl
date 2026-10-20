@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CODX // Technical Architecture & Engineering Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0414;
+      --surface: #120726;
+      --border: rgba(255, 215, 0, 0.2);
+      --gold: #FFD700;
+      --orange: #FF7A00;
+      --purple: #8b5cf6;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      background: rgba(18, 7, 38, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 1.25rem;
+      backdrop-filter: blur(20px);
+      margin-bottom: 2rem;
+      position: sticky;
+      top: 1rem;
+      z-index: 50;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    }
+    .brand-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .brand-badge {
+      font-size: 0.65rem;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 0.2rem 0.5rem;
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      border-radius: 9999px;
+      font-weight: 700;
+    }
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 0.6rem 1.1rem;
+      border-radius: 0.75rem;
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    .btn-primary {
+      background: #6D28D9;
+      color: #fff;
+      border: 1px solid rgba(255, 215, 0, 0.4);
+    }
+    .btn-primary:hover {
+      background: #5B21B6;
+      box-shadow: 0 4px 20px rgba(109, 40, 217, 0.4);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--gold);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(20px);
+    }
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.25rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+    h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: var(--gold);
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+      padding-bottom: 0.4rem;
+    }
+    h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      color: #fff;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    p, li {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      margin-bottom: 0.6rem;
+    }
+    ul {
+      padding-left: 1.4rem;
+      margin-bottom: 1rem;
+    }
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.15rem 0.35rem;
+      border-radius: 0.3rem;
+      color: var(--gold);
+    }
+    pre {
+      background: #06020c;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
+    .badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      background: rgba(109, 40, 217, 0.25);
+      border: 1px solid #8b5cf6;
+      color: #c084fc;
+      margin-right: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
+    .badge-gold {
+      background: rgba(255, 215, 0, 0.1);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .meta-item {
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 1rem;
+    }
+    .meta-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+    .meta-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    @media print {
+      body { background: #fff; color: #111; padding: 0; }
+      .header-bar { display: none; }
+      .card { border: 1px solid #ccc; background: #fff; color: #111; break-inside: avoid; }
+      h1, h2, h3 { color: #000; }
+      code { color: #000; background: #eee; }
+      pre { background: #f8f8f8; color: #000; border: 1px solid #ddd; }
+      p, li { color: #333; }
+      .badge, .badge-gold { color: #000; border-color: #999; background: #eee; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header-bar">
+      <div class="brand-title">
+        <span>CODX</span>
+        <span class="brand-badge">ARCHITECTURE SPEC</span>
+      </div>
+      <div class="actions">
+        <a href="/" class="btn btn-secondary">← RETURN TO APP</a>
+        <button onclick="window.print()" class="btn btn-primary">⎙ EXPORT TO PDF</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="card">
+        <h1>CODX // System Architecture & Engineering Documentation</h1>
+        <p style="font-size: 1.1rem; color: #94a3b8;">
+          How we engineered the official web platform for the 2nd Generation of APD at FEU Diliman from scratch.
+        </p>
+
+        <div class="meta-grid">
+          <div class="meta-item">
+            <div class="meta-label">Organization</div>
+            <div class="meta-value">CODX (FEU Diliman)</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Primary Stack</div>
+            <div class="meta-value">React 19 + Vite 8 + Tailwind</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Graphics & Audio</div>
+            <div class="meta-value">Canvas 2D + Web Audio API</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Cloud Backend</div>
+            <div class="meta-value">Firebase Firestore + Auth</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1rem;">
+          <span class="badge badge-gold">PRODUCTION READY</span>
+          <span class="badge">ZERO EXTERNAL AUDIO</span>
+          <span class="badge">OFFLINE DETERMINISTIC</span>
+          <span class="badge">WCAG AA COMPLIANT</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>1. Frontend Architecture & Design System</h2>
+        <p>
+          We engineered the web client on React 19 and Vite 8 with Tailwind CSS v4. Rather than using generic UI component libraries, we created a bespoke glassmorphic design system adhering strictly to the FEU Diliman cybernetic aesthetic.
+        </p>
+
+        <h3>Core Design System Tokens</h3>
+        <ul>
+          <li><strong>Obsidian Base (<code>#0a0414</code>):</strong> Deep matte backdrop ensuring low eye fatigue and high contrast.</li>
+          <li><strong>Tamaraw Gold (<code>#FFD700</code>):</strong> High-visibility primary accent honoring FEU Diliman institutional colors.</li>
+          <li><strong>Royal Purple (<code>#6D28D9</code> / <code>#8B5CF6</code>):</strong> Signature accent for interactive controls, cards, and buttons.</li>
+          <li><strong>Backdrop Filtering:</strong> Standardized 24px frosted glass blur with hairline borders (<code>rgba(255, 255, 255, 0.08)</code>).</li>
+        </ul>
+
+        <h3>Scroll-Driven Spring Physics</h3>
+        <p>
+          Using Framer Motion spring solvers (<code>damping: 26, stiffness: 90, mass: 0.55</code>), the rocket launch sequence maps raw user scroll deltas smoothly into rocket camera ascent, celestial orbit receding, and the Dextron mascot reveal with zero jank.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>2. Interactive HTML5 Canvas 2D Systems</h2>
+        <p>
+          We deliberately chose lightweight HTML5 Canvas 2D context engines over heavy DOM trees or WebGL shaders for rapid rendering and instant responsiveness.
+        </p>
+
+        <h3>A. Warp-Speed Constellation Starfield (<code>CyberBackground.jsx</code>)</h3>
+        <ul>
+          <li><strong>Proximity Mesh:</strong> Dynamically calculates distance vectors between stars within 130px to render glowing constellation filaments.</li>
+          <li><strong>Scroll Velocity Warp:</strong> Listens to <code>window.scrollY</code> and mouse wheel deltas to compute instantaneous acceleration. When the user scrolls, stars stretch downward into rapid warp streaks that decay with exponential deceleration (<code>warpVelocity *= 0.92</code>).</li>
+          <li><strong>Interactive Cursor Tether:</strong> Magnetic field calculations draw energy lines from stars to cursor position with custom procedural hums.</li>
+        </ul>
+
+        <h3>B. Real-Time 1024×1024 PFP Frame Generator (<code>PfpGenerator.jsx</code>)</h3>
+        <ul>
+          <li><strong>Interactive Pan & Drag:</strong> Direct pointer capture (<code>setPointerCapture</code>) enables mouse drag and mobile touch dragging with 1:1 screen-to-canvas coordinate mapping.</li>
+          <li><strong>Scroll-to-Zoom:</strong> Intercepts canvas wheel events with non-passive listeners, scaling the photo between 0.5× and 3.0× without triggering browser page scrolling.</li>
+          <li><strong>Pixel-Perfect HD Export:</strong> The offscreen 1024×1024 export canvas proportionally scales user pan offsets (<code>exportScale = 1024 / 600</code>) underneath official high-res PNG frame overlays.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>3. Procedural Audio Synthesis via Native Web Audio API</h2>
+        <p>
+          To eliminate external audio hosting, bandwidth bottlenecks, and lag, all audio in CODX is synthesized programmatically at runtime using the browser's native <code>AudioContext</code>.
+        </p>
+
+        <h3>Sound Engine Architecture (<code>audioSynth.js</code>)</h3>
+        <ul>
+          <li><strong>Lofi Lounge Chord Loop:</strong> Continuous four-chord progression in C# minor (C#m7 – Amaj7 – F#m7 – G#7) using dual triangle oscillators passed through a resonant Biquad lowpass filter (620Hz, Q: 1.8).</li>
+          <li><strong>Haptic Click Feedback:</strong> 18ms exponential frequency pitch sweep (880Hz down to 220Hz) providing tactile feedback for button clicks.</li>
+          <li><strong>Dextron Robot Voice:</strong> Formant-frequency modulated square wave chirps triggered procedurally during arrival sequences.</li>
+          <li><strong>Zero Asset Dependency:</strong> Total audio payload footprint is 0 KB of media files.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>4. Cloud Backend & Real-Time Firestore</h2>
+        <p>
+          CODX connects directly to Google Firebase Firestore and Firebase Authentication with dual-layer fallback to persistent local storage for disconnected environments.
+        </p>
+
+        <h3>Firestore Collections</h3>
+        <ul>
+          <li><code>/articles</code>: Real-time event dispatches, workshop notices, and hackathon schedules.</li>
+          <li><code>/frames</code>: Official transparent PNG frames uploaded by administrators for community PFP generation.</li>
+          <li><code>/tracks</code>: Student technical committees and tracks populating registration dropdowns dynamically.</li>
+          <li><code>/applications</code>: Student membership applications with approval, archiving, and review tools.</li>
+        </ul>
+
+        <h3>Discreet Council Admin Portal</h3>
+        <p>
+          Authenticated through Firebase Auth and accessible globally via <code>Ctrl + Shift + A</code>, granting executive officers real-time administrative oversight over public content.
+        </p>
+      </section>
+    </main>
+
+    <footer style="text-align: center; margin-top: 3rem; color: #64748b; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;">
+      CODX // THE 2ND GENERATION OF APD — FEU DILIMAN CAMPUS • 2026
+    </footer>
+  </div>
+</body>
+</html>

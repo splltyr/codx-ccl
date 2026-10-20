@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth" style="background-color: #0a0414; color: #f8fafc;">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/assets/codx_logo_black.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CODX // FEU Diliman Student Collective</title>
+    <meta name="description" content="Official website and member portal for CODX (2nd Gen APD) at FEU Diliman." />
+    <!-- Google Fonts: Space Grotesk, Outfit, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      html, body {
+        background-color: #0a0414 !important;
+        color: #f8fafc;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body class="bg-[#08040d] text-slate-100 font-['Outfit',sans-serif] antialiased selection:bg-purple-600 selection:text-white overflow-x-hidden" style="background-color: #0a0414;">
+    <!-- Skip link for keyboard navigation -->
+    <a 
+      href="#main-content" 
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-purple-600 focus:text-white focus:rounded-xl focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-white font-mono text-xs"
+    >
+      Skip to main content
+    </a>
+    <div id="root">
+      <!-- Dark pre-mount fallback: replaced instantly upon React hydration -->
+      <div style="min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #0a0414; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; text-align: center; padding: 24px;">
+        <div style="width: 48px; height: 48px; border-radius: 12px; border: 2px solid #8B5CF6; border-top-color: #FFD700; animation: spin 1s linear infinite; margin-bottom: 20px;"></div>
+        <h1 style="font-size: 20px; font-weight: 700; letter-spacing: 0.05em; color: #ffffff; margin: 0 0 8px 0;">CODX // GENERATION 2</h1>
+        <p style="font-size: 13px; color: #A1A1AA; max-width: 380px; margin: 0; line-height: 1.5;">Loading CODX portal...</p>
+        <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+      </div>
+    </div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
