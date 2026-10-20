@@ -6,7 +6,7 @@ Built this as a cybernetic single-page app with interactive canvas tools, proced
 
 ---
 
-## ⚡ What's in here
+##  What's in here
 
 - **Interactive Bash Terminal (`codx bash`)**: Built-in CLI in the hero section that responds to commands like `help`, `tracks`, `pfp`, `events`, `join`, and `clear`.
 - **Rocket Intro Sequence**: Scroll-driven launch sequence with particle starfield and Dextron mascot greeting.
@@ -18,7 +18,7 @@ Built this as a cybernetic single-page app with interactive canvas tools, proced
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Frontend**: React 19, Vite, Tailwind CSS v4
 - **Animations**: Framer Motion
@@ -29,7 +29,7 @@ Built this as a cybernetic single-page app with interactive canvas tools, proced
 
 ---
 
-## 🚀 Running Locally
+##  Running Locally
 
 ```bash
 # 1. Install dependencies
@@ -49,7 +49,7 @@ npm run preview
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```
 ├── public/
@@ -75,4 +75,4 @@ npm run preview
 
 ---
 
-Made for FEU Diliman IT students.
+Made for FEU Diliman students.
