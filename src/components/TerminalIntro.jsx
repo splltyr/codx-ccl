@@ -1,14 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   Terminal as TerminalIcon, 
   CheckCircle2, 
   ArrowRight, 
-  Sparkles, 
-  Bot, 
-  FastForward,
-  Cpu,
-  ShieldAlert,
   X
 } from 'lucide-react';
 import { cyberAudio } from '../utils/audioSynth';

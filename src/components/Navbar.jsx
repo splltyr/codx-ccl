@@ -13,12 +13,30 @@ export default function Navbar({ onOpenAdmin, onOpenTerminal, onOpenJoinModal })
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAudioActive, setIsAudioActive] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('hero');
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
+
+      // Section spy to highlight current active navbar item
+      const sections = ['hero', 'about', 'tracks', 'pfp-forge', 'events', 'council', 'contact'];
+      const scrollPosition = window.scrollY + 200;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i]);
+        if (el) {
+          const top = el.offsetTop;
+          if (scrollPosition >= top) {
+            setActiveSection(sections[i]);
+            break;
+          }
+        }
+      }
     };
-    window.addEventListener('scroll', handleScroll);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -31,7 +49,7 @@ export default function Navbar({ onOpenAdmin, onOpenTerminal, onOpenJoinModal })
     { id: 'hero', label: 'Home' },
     { id: 'about', label: 'About' },
     { id: 'tracks', label: 'Tracks' },
-    { id: 'pfp-forge', label: 'PFP Generator', highlight: true },
+    { id: 'pfp-forge', label: 'PFP Generator' },
     { id: 'events', label: 'Updates' },
     { id: 'council', label: 'Leadership' },
     { id: 'contact', label: 'Apply' },
@@ -40,6 +58,7 @@ export default function Navbar({ onOpenAdmin, onOpenTerminal, onOpenJoinModal })
   const scrollTo = (id) => {
     cyberAudio.playClick();
     setIsMobileMenuOpen(false);
+    setActiveSection(id);
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -66,11 +85,11 @@ export default function Navbar({ onOpenAdmin, onOpenTerminal, onOpenJoinModal })
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') scrollTo('hero'); }}
             aria-label="CODX Home"
           >
-            <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 bg-black/80 p-0.5 group-hover:border-[#FFD700]/50 transition-all flex items-center justify-center shrink-0 shadow-lg">
+            <div className="w-10 h-10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
               <img 
-                src="/assets/codx_logo_black.png" 
-                alt="CODX Black Emblem" 
-                className="w-full h-full object-cover rounded-[10px]"
+                src="/images/CODX.png" 
+                alt="CODX Official Emblem" 
+                className="w-full h-full object-contain filter drop-shadow-[0_2px_12px_rgba(109,40,217,0.45)] group-hover:drop-shadow-[0_2px_16px_rgba(255,215,0,0.5)] transition-all"
               />
             </div>
 
@@ -86,19 +105,21 @@ export default function Navbar({ onOpenAdmin, onOpenTerminal, onOpenJoinModal })
 
           {/* Desktop Navigation Links */}
           <nav aria-label="Main Navigation" className="hidden md:flex items-center gap-1 px-4 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.08] backdrop-blur-xl">
-            {navLinks.map((link) => (
-              <button
-                key={link.id}
-                onClick={() => scrollTo(link.id)}
-                className={`min-h-[36px] px-3.5 py-1.5 rounded-full text-xs font-mono transition-all ${
-                  link.highlight 
-                    ? 'text-[#FFD700] font-bold bg-[#FF7A00]/15 hover:bg-[#FF7A00]/25 border border-[#FFD700]/30' 
-                    : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
-                }`}
-              >
-                {link.label}
-              </button>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.id;
+              return (
+                <button
+                  key={link.id}
+                  onClick={() => scrollTo(link.id)}
+                  className={`nav-btn-interactive min-h-[36px] px-3.5 py-1.5 rounded-full text-xs font-mono cursor-pointer ${
+                    isActive ? 'active' : ''
+                  }`}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  {link.label}
+                </button>
+              );
+            })}
           </nav>
 
           {/* Right Action Items */}
@@ -194,20 +215,28 @@ export default function Navbar({ onOpenAdmin, onOpenTerminal, onOpenJoinModal })
       {/* Mobile Drawer */}
       {isMobileMenuOpen && (
         <div className="md:hidden mt-2 mx-4 p-4 rounded-2xl bg-[#0e071c]/95 border border-white/10 backdrop-blur-2xl flex flex-col gap-2 shadow-2xl">
-          {navLinks.map((link) => (
-            <button
-              key={link.id}
-              onClick={() => scrollTo(link.id)}
-              className="w-full min-h-[44px] py-2.5 px-4 rounded-xl text-left text-xs font-mono text-slate-200 hover:bg-white/[0.06] flex items-center justify-between"
-            >
-              <span>{link.label}</span>
-              {link.highlight && (
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#FF7A00]/20 text-[#FFD700] border border-[#FFD700]/30">
-                  NEW
-                </span>
-              )}
-            </button>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.id;
+            return (
+              <button
+                key={link.id}
+                onClick={() => scrollTo(link.id)}
+                className={`w-full min-h-[44px] py-2.5 px-4 rounded-xl text-left text-xs font-mono transition-all duration-300 border flex items-center justify-between cursor-pointer ${
+                  isActive
+                    ? 'active text-[#FFD700] font-bold bg-[#FF7A00]/15 border-[#FFD700]/40 shadow-[0_0_14px_rgba(255,215,0,0.2)]'
+                    : 'text-slate-200 border-transparent hover:text-[#FFD700] hover:bg-[#FF7A00]/15 hover:border-[#FFD700]/40'
+                }`}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                <span>{link.label}</span>
+                {isActive && (
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#FF7A00]/20 text-[#FFD700] border border-[#FFD700]/30 font-bold">
+                    ACTIVE
+                  </span>
+                )}
+              </button>
+            );
+          })}
           <div className="pt-3 border-t border-white/[0.08] flex flex-col gap-2">
             <button
               onClick={() => {

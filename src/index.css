@@ -147,6 +147,41 @@
   box-shadow: 0 4px 18px rgba(109, 40, 217, 0.35);
 }
 
+/* Interactive Navbar buttons with gold outline & text highlight on :hover and .active */
+.nav-btn-interactive {
+  position: relative;
+  color: #cbd5e1;
+  background-color: transparent;
+  border: 1px solid transparent;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+.nav-btn-interactive:hover {
+  color: #FFD700;
+  background-color: rgba(255, 122, 0, 0.15);
+  border-color: rgba(255, 215, 0, 0.35);
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.18);
+}
+
+.nav-btn-interactive.active {
+  color: #FFD700;
+  font-weight: 700;
+  background-color: rgba(255, 122, 0, 0.18);
+  border-color: rgba(255, 215, 0, 0.45);
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.25);
+}
+
+.nav-btn-interactive.active:hover {
+  background-color: rgba(255, 122, 0, 0.25);
+  border-color: rgba(255, 215, 0, 0.65);
+  box-shadow: 0 0 22px rgba(255, 215, 0, 0.35);
+}
+
+.nav-btn-interactive:active {
+  transform: scale(0.97);
+}
+
 /* brand text colors */
 .text-gold {
   color: #FFD700 !important;

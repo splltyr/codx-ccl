@@ -8,23 +8,17 @@ import {
   Users, 
   FileText, 
   Layers, 
-  RefreshCw, 
   AlertCircle, 
-  KeyRound,
   Plus,
   Upload,
-  Image as ImageIcon,
   ExternalLink,
-  ShieldCheck,
-  CheckCircle2,
   Globe,
   UserCheck,
   Archive,
   Inbox,
   Mail,
   MessageSquare,
-  Search,
-  Check
+  Search
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon, FacebookIcon } from './BrandIcons';
 import { firebaseData } from '../services/firebaseService';
@@ -402,8 +396,12 @@ export default function AdminPortal({ isOpen, onClose, onShowToast }) {
         {/* Header Bar */}
         <div className="px-6 py-4 bg-white/[0.02] border-b border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#120726]/80 border border-[#FFD700]/30 flex items-center justify-center text-[#FFD700] shadow-[0_0_15px_rgba(255,215,0,0.2)]">
-              <KeyRound className="w-5 h-5 text-[#FFD700]" aria-hidden="true" />
+            <div className="w-10 h-10 flex items-center justify-center shrink-0">
+              <img 
+                src="/images/CODX.png" 
+                alt="CODX Logo" 
+                className="w-full h-full object-contain filter drop-shadow-[0_2px_12px_rgba(255,215,0,0.35)]"
+              />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -858,6 +856,7 @@ export default function AdminPortal({ isOpen, onClose, onShowToast }) {
                             onChange={(e) => setArticleForm({ ...articleForm, category: e.target.value })}
                             className="glass-input w-full px-3 py-2 rounded-xl bg-[#120a22] min-h-[44px]"
                           >
+                            <option value="Academic Program Spotlight">Academic Program Spotlight</option>
                             <option value="Hackathon">Hackathon</option>
                             <option value="Workshop">Workshop</option>
                             <option value="Keynote">Keynote</option>
@@ -1346,9 +1345,9 @@ export default function AdminPortal({ isOpen, onClose, onShowToast }) {
                           const query = appSearch.toLowerCase();
                           const matchName = app.fullName?.toLowerCase().includes(query);
                           const matchEmail = app.email?.toLowerCase().includes(query);
-                          const matchDiscord = app.discord?.toLowerCase().includes(query);
+                          const matchNickname = app.nickname?.toLowerCase().includes(query) || app.discord?.toLowerCase().includes(query);
                           const matchTrack = app.track?.toLowerCase().includes(query);
-                          return matchName || matchEmail || matchDiscord || matchTrack;
+                          return matchName || matchEmail || matchNickname || matchTrack;
                         }
                         return true;
                       })
@@ -1396,7 +1395,7 @@ export default function AdminPortal({ isOpen, onClose, onShowToast }) {
                               </div>
                               <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-center gap-2">
                                 <MessageSquare className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                                <span className="text-slate-300 truncate">{app.discord || 'No Discord'}</span>
+                                <span className="text-slate-300 truncate" title={app.nickname || app.discord}>{app.nickname || app.discord || 'No Nickname'}</span>
                               </div>
                               <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-center gap-2">
                                 <Layers className="w-3.5 h-3.5 text-[#FF7A00] shrink-0" />

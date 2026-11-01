@@ -18,10 +18,12 @@ export default function ContactSection({ onOpenAdmin, onShowToast, onOpenDocs })
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    nickname: '',
     discord: '',
     year: 'Freshman (1st Year)',
     track: 'Systems & Cloud Infrastructure',
-    interest: ''
+    interest: '',
+    emailPermission: false
   });
 
   const [submittedPass, setSubmittedPass] = useState(null);
@@ -46,20 +48,49 @@ export default function ContactSection({ onOpenAdmin, onShowToast, onOpenDocs })
     cyberAudio.playClick();
     setIsSubmitting(true);
 
+    const userNickname = formData.nickname.trim() || formData.discord.trim();
+
     try {
       // save application
       await firebaseData.submitApplication({
         fullName: formData.name,
         email: formData.email,
-        discord: formData.discord,
+        nickname: userNickname,
+        discord: userNickname,
         year: formData.year,
         track: formData.track,
         interest: formData.interest,
+        emailPermission: formData.emailPermission,
+        sentToEmail: 'codx@feudiliman.edu.ph',
         status: 'pending'
       });
     } catch (err) {
       console.warn('Firebase application submission error:', err);
     }
+
+    const subject = encodeURIComponent(`[CODX Membership Application] - ${formData.name} (${formData.track})`);
+    const emailBody = encodeURIComponent(
+`Dear CODX Council,
+
+I am submitting my student membership application to CODX FEU Diliman.
+
+Applicant Information:
+----------------------
+Full Name: ${formData.name}
+Nickname: ${userNickname}
+Email: ${formData.email}
+Year Level: ${formData.year}
+Preferred Track: ${formData.track}
+
+Statement of Interest / Goals:
+${formData.interest || 'N/A'}
+
+Access Pass ID: ${'CODX-' + Math.floor(100000 + Math.random() * 900000)}
+Application Date: ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+
+I consent and grant permission for my application details to be processed by CODX.`
+    );
+    const mailtoUrl = `mailto:codx@feudiliman.edu.ph?subject=${subject}&body=${emailBody}`;
 
     const generatedPass = {
       id: 'CODX-' + Math.floor(100000 + Math.random() * 900000),
@@ -67,7 +98,9 @@ export default function ContactSection({ onOpenAdmin, onShowToast, onOpenDocs })
       email: formData.email,
       track: formData.track,
       year: formData.year,
-      discord: formData.discord,
+      nickname: userNickname,
+      discord: userNickname,
+      mailtoUrl: mailtoUrl,
       timestamp: new Date().toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
@@ -78,7 +111,14 @@ export default function ContactSection({ onOpenAdmin, onShowToast, onOpenDocs })
     setSubmittedPass(generatedPass);
     setIsSubmitting(false);
     cyberAudio.playChime(880, 0.4);
-    if (onShowToast) onShowToast('Membership application submitted successfully!');
+    if (onShowToast) onShowToast('Membership application submitted & opening mail composer!');
+
+    // Trigger user mail client with prefilled details to codx@feudiliman.edu.ph
+    try {
+      window.location.href = mailtoUrl;
+    } catch (e) {
+      console.warn('Mailto redirect suppressed:', e);
+    }
   };
 
   const handleCopyPassId = () => {
@@ -166,16 +206,16 @@ export default function ContactSection({ onOpenAdmin, onShowToast, onOpenDocs })
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="member-discord" className="text-slate-300 block mb-1 font-medium">
-                        DISCORD / USERNAME <span className="text-rose-400">*</span>
+                      <label htmlFor="member-nickname" className="text-slate-300 block mb-1 font-medium">
+                        NICKNAME <span className="text-rose-400">*</span>
                       </label>
                       <input
-                        id="member-discord"
+                        id="member-nickname"
                         type="text"
                         required
-                        value={formData.discord}
-                        onChange={(e) => setFormData({ ...formData, discord: e.target.value })}
-                        placeholder="@juandc"
+                        value={formData.nickname || formData.discord}
+                        onChange={(e) => setFormData({ ...formData, nickname: e.target.value, discord: e.target.value })}
+                        placeholder="e.g. Juan / Johnny"
                         className="glass-input w-full px-3 py-2 rounded-xl text-xs"
                       />
                     </div>
@@ -236,11 +276,26 @@ export default function ContactSection({ onOpenAdmin, onShowToast, onOpenDocs })
                     />
                   </div>
 
+                  {/* Permission to forward application to official CODX email */}
+                  <div className="flex items-start gap-2.5 pt-1 text-[11px] text-slate-300">
+                    <input
+                      id="member-email-permission"
+                      type="checkbox"
+                      required
+                      checked={formData.emailPermission}
+                      onChange={(e) => setFormData({ ...formData, emailPermission: e.target.checked })}
+                      className="mt-0.5 rounded border-white/20 bg-white/5 text-[#FFD700] focus:ring-[#8B5CF6] accent-[#FFD700] cursor-pointer"
+                    />
+                    <label htmlFor="member-email-permission" className="leading-snug cursor-pointer select-none">
+                      I grant permission for my student application details to be forwarded to the official CODX email (<span className="text-[#FFD700]">codx@feudiliman.edu.ph</span>). <span className="text-rose-400">*</span>
+                    </label>
+                  </div>
+
                   <button
                     type="submit"
                     disabled={isSubmitting}
                     aria-busy={isSubmitting}
-                    className="w-full min-h-[46px] py-3 rounded-xl btn-primary-purple font-mono text-xs font-bold tracking-wider transition-all disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-2"
+                    className="w-full min-h-[46px] py-3 rounded-xl btn-primary-purple font-mono text-xs font-bold tracking-wider transition-all disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Send className="w-4 h-4 text-white" aria-hidden="true" />
                     <span>{isSubmitting ? 'SUBMITTING APPLICATION...' : 'SUBMIT APPLICATION'}</span>
@@ -274,6 +329,10 @@ export default function ContactSection({ onOpenAdmin, onShowToast, onOpenDocs })
                       <span className="text-slate-100 font-bold">{submittedPass.name}</span>
                     </div>
                     <div>
+                      <span className="text-slate-400 block font-light">NICKNAME:</span>
+                      <span className="text-slate-100 font-bold">{submittedPass.nickname || 'N/A'}</span>
+                    </div>
+                    <div>
                       <span className="text-slate-400 block font-light">TRACK:</span>
                       <span className="text-[#FFD700] font-bold truncate block">{submittedPass.track}</span>
                     </div>
@@ -285,20 +344,34 @@ export default function ContactSection({ onOpenAdmin, onShowToast, onOpenDocs })
                       <span className="text-slate-400 block font-light">DATE ISSUED:</span>
                       <span className="text-slate-300 block">{submittedPass.timestamp}</span>
                     </div>
+                    <div>
+                      <span className="text-slate-400 block font-light">FORWARD DESTINATION:</span>
+                      <span className="text-emerald-400 font-bold block truncate" title="codx@feudiliman.edu.ph">codx@feudiliman.edu.ph</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <button
                     onClick={handleCopyPassId}
-                    className="flex-1 min-h-[44px] py-2.5 rounded-xl btn-glass-gold font-mono text-xs font-bold transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+                    className="flex-1 min-h-[44px] py-2.5 px-3 rounded-xl btn-glass-gold font-mono text-xs font-bold transition-all flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer"
                   >
                     {isCopied ? <Check className="w-4 h-4 text-[#FFD700]" aria-hidden="true" /> : <Copy className="w-4 h-4 text-[#FFD700]" aria-hidden="true" />}
                     <span>{isCopied ? 'COPIED TO CLIPBOARD' : 'COPY PASS ID'}</span>
                   </button>
+                  {submittedPass.mailtoUrl && (
+                    <a
+                      href={submittedPass.mailtoUrl}
+                      className="min-h-[44px] px-3.5 rounded-xl bg-[#6D28D9]/25 hover:bg-[#6D28D9]/40 border border-[#8B5CF6]/40 text-purple-200 hover:text-white font-mono text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-[0.98]"
+                      title="Open application draft in your email client to codx@feudiliman.edu.ph"
+                    >
+                      <Mail className="w-4 h-4 text-[#FFD700]" aria-hidden="true" />
+                      <span>OPEN EMAIL CLIENT</span>
+                    </a>
+                  )}
                   <button
                     onClick={() => setSubmittedPass(null)}
-                    className="min-h-[44px] px-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-mono text-slate-300 hover:text-white active:scale-[0.98]"
+                    className="min-h-[44px] px-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-mono text-slate-300 hover:text-white active:scale-[0.98] cursor-pointer"
                   >
                     NEW APPLICATION
                   </button>
@@ -353,7 +426,14 @@ export default function ContactSection({ onOpenAdmin, onShowToast, onOpenDocs })
       {/* Minimalist Footer */}
       <footer className="mt-24 pt-8 border-t border-white/[0.04] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-300">
-          <div>
+          <div className="flex items-center gap-3">
+            <div className="w-7 h-7 flex items-center justify-center shrink-0">
+              <img 
+                src="/images/CODX.png" 
+                alt="CODX Official Emblem" 
+                className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(109,40,217,0.35)]"
+              />
+            </div>
             <span>CODX // THE 2ND GENERATION OF APD — FEU DILIMAN</span>
           </div>
 

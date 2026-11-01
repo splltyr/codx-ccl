@@ -89,16 +89,27 @@ export default function About() {
               </div>
             </div>
 
-            {/* visual card */}
-            <div className="md:col-span-5 h-64 rounded-2xl bg-[#050508] border border-white/[0.08] flex flex-col items-center justify-center p-6 text-center shadow-xl">
-              <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center mb-4 text-[#FFD700]">
-                <Cpu className="w-8 h-8" />
+            {/* official branding card */}
+            <div className="md:col-span-5 h-64 rounded-2xl bg-[#050508]/85 border border-[#FFD700]/25 flex flex-col items-center justify-center p-6 text-center shadow-[0_0_35px_rgba(255,215,0,0.08)] relative overflow-hidden group">
+              <div 
+                className="absolute inset-0 opacity-15 pointer-events-none"
+                style={{
+                  backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,215,0,0.3) 1px, transparent 0)',
+                  backgroundSize: '16px 16px'
+                }}
+              />
+              <div className="w-24 h-24 flex items-center justify-center mb-3 group-hover:scale-105 transition-all duration-300">
+                <img 
+                  src="/images/CODX.png" 
+                  alt="CODX Official Emblem" 
+                  className="w-full h-full object-contain filter drop-shadow-[0_4px_24px_rgba(109,40,217,0.5)] group-hover:drop-shadow-[0_4px_28px_rgba(255,215,0,0.4)]"
+                />
               </div>
-              <span className="font-['Space_Grotesk'] font-bold text-white text-base">
-                TEST FRAMEWORK
+              <span className="font-['Space_Grotesk'] font-bold text-white text-lg tracking-wider">
+                CODX // FEU DILIMAN
               </span>
-              <span className="text-[11px] font-mono text-[#A1A1AA] mt-1">
-                Mock Preview Platform
+              <span className="text-[11px] font-mono text-[#FFD700] mt-1 font-semibold">
+                THE 2ND GENERATION OF APD
               </span>
             </div>
           </div>
