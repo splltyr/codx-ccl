@@ -54,13 +54,21 @@ export default function App() {
     }
   };
 
+  const handleIntroComplete = () => {
+    setShowRocketIntro(false);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    });
+  };
+
   return (
     <div className="relative min-h-screen bg-[#0a0414] text-slate-100 font-['Outfit',sans-serif] selection:bg-[#6D28D9] selection:text-white">
       
       {/* rocket launch intro animation */}
       <AnimatePresence>
         {showRocketIntro && (
-          <RocketIntroSequence onComplete={() => setShowRocketIntro(false)} />
+          <RocketIntroSequence onComplete={handleIntroComplete} />
         )}
       </AnimatePresence>
 

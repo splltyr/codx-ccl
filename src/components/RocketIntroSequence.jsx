@@ -76,8 +76,10 @@ export default function RocketIntroSequence({ onComplete }) {
       // trigger site entry once scrolled to the end
       if (clamped >= 0.97 && !isCompletedRef.current) {
         isCompletedRef.current = true;
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         if (onComplete) {
           setTimeout(() => {
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
             onComplete();
           }, 350);
         }
@@ -87,12 +89,37 @@ export default function RocketIntroSequence({ onComplete }) {
     return () => unsub();
   }, [smoothProgress, hasScrolled, onComplete]);
 
-  // Lock body scroll while cinematic intro is active
+  // Lock body & html scroll while cinematic intro is active
   useEffect(() => {
-    const originalOverflow = document.body.style.overflow;
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    const originalBodyHeight = document.body.style.height;
+    const originalHtmlHeight = document.documentElement.style.height;
+
     document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.height = '100%';
+    document.documentElement.style.height = '100%';
+
+    // Keep window strictly pinned at top (0, 0)
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+    const handleScrollLock = () => {
+      if (window.scrollY !== 0 || window.scrollX !== 0) {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      }
+    };
+
+    window.addEventListener('scroll', handleScrollLock, { passive: false });
+
     return () => {
-      document.body.style.overflow = originalOverflow;
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      document.body.style.height = originalBodyHeight;
+      document.documentElement.style.height = originalHtmlHeight;
+      window.removeEventListener('scroll', handleScrollLock);
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
       }
@@ -102,6 +129,7 @@ export default function RocketIntroSequence({ onComplete }) {
   // 3. Pure Scroll Physics: Wheel, Touch, and Keyboard listeners (Zero buttons)
   const handleWheel = useCallback((e) => {
     e.preventDefault();
+    e.stopPropagation();
     cyberAudio.unlockAudio();
     registerScrollActivity();
     const delta = e.deltaY;
@@ -130,6 +158,10 @@ export default function RocketIntroSequence({ onComplete }) {
     };
 
     const handleTouchMove = (e) => {
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+      e.stopPropagation();
       if (e.touches && e.touches[0]) {
         cyberAudio.unlockAudio();
         registerScrollActivity();
@@ -158,7 +190,7 @@ export default function RocketIntroSequence({ onComplete }) {
 
     window.addEventListener('wheel', handleWheel, { passive: false });
     window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
@@ -307,7 +339,7 @@ export default function RocketIntroSequence({ onComplete }) {
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 0.6, ease: 'easeInOut' } }}
       style={{ opacity: masterOpacity }}
-      className="fixed inset-0 z-50 bg-[#0a0414] text-white flex items-center justify-center overflow-hidden select-none"
+      className="fixed inset-0 z-50 bg-[#0a0414] text-white flex items-center justify-center overflow-hidden select-none touch-none overscroll-none"
     >
       {/* Background Starfield Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 block pointer-events-none" />
@@ -316,7 +348,8 @@ export default function RocketIntroSequence({ onComplete }) {
       <button
         onClick={() => {
           cyberAudio.playClick();
-          onComplete();
+          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+          if (onComplete) onComplete();
         }}
         className="absolute top-6 right-6 z-50 px-3.5 py-1.5 rounded-full bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-slate-400 hover:text-white font-mono text-xs transition-all cursor-pointer"
       >
