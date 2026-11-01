@@ -20,7 +20,7 @@ export default function Navbar({ onOpenAdmin, onOpenTerminal, onOpenJoinModal })
       setIsScrolled(window.scrollY > 20);
 
       // Section spy to highlight current active navbar item
-      const sections = ['hero', 'about', 'tracks', 'pfp-forge', 'events', 'council', 'contact'];
+      const sections = ['hero', 'about', 'tracks', 'pfp-forge', 'council', 'contact'];
       const scrollPosition = window.scrollY + 200;
 
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -50,7 +50,6 @@ export default function Navbar({ onOpenAdmin, onOpenTerminal, onOpenJoinModal })
     { id: 'about', label: 'About' },
     { id: 'tracks', label: 'Tracks' },
     { id: 'pfp-forge', label: 'PFP Generator' },
-    { id: 'events', label: 'Updates' },
     { id: 'council', label: 'Leadership' },
     { id: 'contact', label: 'Apply' },
   ];

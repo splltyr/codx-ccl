@@ -9,7 +9,6 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
 import WhatWeDo from './components/WhatWeDo';
-import CommunityEvents from './components/CommunityEvents';
 import PfpGenerator from './components/PfpGenerator';
 import Leadership from './components/Leadership';
 import ContactSection from './components/ContactSection';
@@ -114,7 +113,6 @@ export default function App() {
         <About />
         <WhatWeDo />
         <PfpGenerator onShowToast={showToast} />
-        <CommunityEvents />
         <Leadership />
         <ContactSection 
           onOpenAdmin={() => setIsAdminOpen(true)}
